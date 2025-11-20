@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  HomeIcon,
+  DocumentTextIcon,
   BeakerIcon,
   BellIcon,
   Cog6ToothIcon,
@@ -11,9 +11,8 @@ import {
 } from '@heroicons/react/24/outline';
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: HomeIcon },
+  { name: 'Lab Reports', href: '/', icon: DocumentTextIcon },
   { name: 'Analyzer', href: '/analyzer', icon: BeakerIcon },
-  { name: 'Review', href: '/review', icon: BellIcon },
   { name: 'Settings', href: '/settings', icon: Cog6ToothIcon },
 ];
 
@@ -40,9 +39,9 @@ export default function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto">
-        <div className="px-4 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        {/* <div className="px-4 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           Menu
-        </div>
+        </div> */}
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -69,11 +68,11 @@ export default function Sidebar() {
       <div className="p-4 border-t border-white/10 bg-black/20">
         <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
           <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white text-sm font-bold shadow-md ring-2 ring-white/10 group-hover:ring-white/20 transition-all">
-            RH
+            AV
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">Renal Clinic</p>
-            <p className="text-xs text-gray-400 truncate">Houston, TX</p>
+            <p className="text-sm font-medium text-white truncate">Andy Verma</p>
+            <p className="text-xs text-gray-400 truncate">General Manager</p>
           </div>
           <ArrowRightOnRectangleIcon className="h-5 w-5 text-gray-500 group-hover:text-white transition-colors" />
         </div>

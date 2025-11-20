@@ -25,7 +25,7 @@ export const patients = [
   },
   {
     id: 3,
-    name: "Robert Johnson",
+    name: "Robert Davis",
     mrn: "MRN-2024-003",
     dob: "1958-11-30",
     age: 65,
@@ -33,6 +33,50 @@ export const patients = [
     lastVisit: "2024-11-20",
     ckdStage: "Stage 5",
     physician: "Dr. Sarah Johnson"
+  },
+  {
+    id: 4,
+    name: "Patricia Williams",
+    mrn: "MRN-2024-004",
+    dob: "1968-05-12",
+    age: 56,
+    gender: "Female",
+    lastVisit: "2024-11-18",
+    ckdStage: "Stage 3a",
+    physician: "Dr. Priya Patel"
+  },
+  {
+    id: 5,
+    name: "James Wilson",
+    mrn: "MRN-2024-005",
+    dob: "1961-09-08",
+    age: 63,
+    gender: "Male",
+    lastVisit: "2024-11-17",
+    ckdStage: "Stage 5",
+    physician: "Dr. Sarah Johnson"
+  },
+  {
+    id: 6,
+    name: "Linda Martinez",
+    mrn: "MRN-2024-006",
+    dob: "1970-12-20",
+    age: 53,
+    gender: "Female",
+    lastVisit: "2024-11-15",
+    ckdStage: "Stage 3b",
+    physician: "Dr. Michael Chen"
+  },
+  {
+    id: 7,
+    name: "David Thompson",
+    mrn: "MRN-2024-007",
+    dob: "1963-04-17",
+    age: 61,
+    gender: "Male",
+    lastVisit: "2024-11-14",
+    ckdStage: "Stage 4",
+    physician: "Dr. Priya Patel"
   }
 ];
 
@@ -171,45 +215,261 @@ export const labReports = [
     ]
   },
   {
-    id: 3,
-    patientId: 3,
-    patientName: "Robert Johnson",
-    mrn: "MRN-2024-003",
-    reportDate: "2024-11-20T11:00:00",
-    status: "needs_review",
+    id: 4,
+    patientId: 4,
+    patientName: "Patricia Williams",
+    mrn: "MRN-2024-004",
+    reportDate: "2024-11-18T10:30:00",
+    status: "reviewed",
     severity: "critical",
-    criticalValues: 2,
-    abnormalValues: 4,
-    normalValues: 7,
+    criticalValues: 1,
+    abnormalValues: 2,
+    normalValues: 10,
     labSource: "Quest Diagnostics",
     values: [
       {
         testName: "Potassium",
-        value: 6.5,
+        value: 6.1,
         unit: "mEq/L",
         normalRange: "3.5-5.0",
         status: "critical",
-        previousValue: 5.2,
+        previousValue: 5.7,
         trend: "up",
-        changePercent: 25.0
+        changePercent: 7.0
+      },
+      {
+        testName: "Creatinine",
+        value: 3.2,
+        unit: "mg/dL",
+        normalRange: "0.7-1.3",
+        status: "abnormal",
+        previousValue: 2.9,
+        trend: "up",
+        changePercent: 10.3
+      },
+      {
+        testName: "BUN",
+        value: 52,
+        unit: "mg/dL",
+        normalRange: "7-20",
+        status: "abnormal",
+        previousValue: 48,
+        trend: "up",
+        changePercent: 8.3
+      }
+    ],
+    aiInsights: "Critical hyperkalemia requiring immediate intervention. Patient was contacted and medication adjustments made. Potassium normalized with loop diuretic increase and dietary modifications.",
+    recommendations: [
+      "Increased furosemide dose to 80mg BID",
+      "Dietary potassium restriction counseling completed",
+      "Follow-up labs in 48 hours to confirm improvement",
+      "Patient educated on high-potassium foods to avoid"
+    ]
+  },
+  {
+    id: 5,
+    patientId: 5,
+    patientName: "James Wilson",
+    mrn: "MRN-2024-005",
+    reportDate: "2024-11-17T08:45:00",
+    status: "reviewed",
+    severity: "critical",
+    criticalValues: 2,
+    abnormalValues: 3,
+    normalValues: 8,
+    labSource: "LabCorp",
+    values: [
+      {
+        testName: "Potassium",
+        value: 6.3,
+        unit: "mEq/L",
+        normalRange: "3.5-5.0",
+        status: "critical",
+        previousValue: 5.8,
+        trend: "up",
+        changePercent: 8.6
+      },
+      {
+        testName: "BUN",
+        value: 85,
+        unit: "mg/dL",
+        normalRange: "7-20",
+        status: "abnormal",
+        previousValue: 72,
+        trend: "up",
+        changePercent: 18.1
+      },
+      {
+        testName: "Creatinine",
+        value: 6.2,
+        unit: "mg/dL",
+        normalRange: "0.7-1.3",
+        status: "abnormal",
+        previousValue: 5.8,
+        trend: "up",
+        changePercent: 6.9
       },
       {
         testName: "eGFR",
-        value: 12,
+        value: 9,
         unit: "mL/min/1.73m²",
         normalRange: ">60",
         status: "critical",
-        previousValue: 15,
+        previousValue: 11,
         trend: "down",
-        changePercent: -20.0
+        changePercent: -18.2
+      },
+      {
+        testName: "Bicarbonate",
+        value: 16,
+        unit: "mEq/L",
+        normalRange: "22-28",
+        status: "abnormal",
+        previousValue: 18,
+        trend: "down",
+        changePercent: -11.1
       }
     ],
-    aiInsights: "URGENT: Severe hyperkalemia (6.5 mEq/L) in Stage 5 CKD patient. Immediate intervention required to prevent cardiac complications.",
+    aiInsights: "Critical hyperkalemia and severe kidney function decline (eGFR 9). Patient admitted for urgent hemodialysis initiation. Temporary catheter placed, first dialysis session completed successfully.",
     recommendations: [
-      "STAT notification to physician",
-      "Consider emergency department referral",
-      "Immediate ECG and cardiac monitoring",
-      "Urgent dialysis may be indicated"
+      "Emergency hemodialysis initiated - completed first session",
+      "Temporary dialysis catheter placed in IR",
+      "AV fistula creation scheduled for next week",
+      "Patient enrolled in dialysis education program",
+      "Nephrology team coordinating ongoing care"
+    ]
+  },
+  {
+    id: 6,
+    patientId: 6,
+    patientName: "Linda Martinez",
+    mrn: "MRN-2024-006",
+    reportDate: "2024-11-15T13:20:00",
+    status: "reviewed",
+    severity: "normal",
+    criticalValues: 0,
+    abnormalValues: 0,
+    normalValues: 13,
+    labSource: "Quest Diagnostics",
+    values: [
+      {
+        testName: "Hemoglobin",
+        value: 11.5,
+        unit: "g/dL",
+        normalRange: "11.0-15.0",
+        status: "normal",
+        previousValue: 11.2,
+        trend: "stable",
+        changePercent: 2.7
+      },
+      {
+        testName: "Calcium",
+        value: 9.2,
+        unit: "mg/dL",
+        normalRange: "8.5-10.5",
+        status: "normal",
+        previousValue: 9.0,
+        trend: "stable",
+        changePercent: 2.2
+      }
+    ],
+    aiInsights: "All values within normal limits. Anemia management effective with current ESA dosing. Calcium-phosphate balance well controlled.",
+    recommendations: [
+      "Continue current treatment plan",
+      "Routine follow-up in 6 weeks"
+    ]
+  },
+  {
+    id: 7,
+    patientId: 7,
+    patientName: "David Thompson",
+    mrn: "MRN-2024-007",
+    reportDate: "2024-11-14T09:15:00",
+    status: "reviewed",
+    severity: "abnormal",
+    criticalValues: 0,
+    abnormalValues: 2,
+    normalValues: 11,
+    labSource: "LabCorp",
+    values: [
+      {
+        testName: "Phosphorus",
+        value: 5.8,
+        unit: "mg/dL",
+        normalRange: "2.5-4.5",
+        status: "abnormal",
+        previousValue: 5.2,
+        trend: "up",
+        changePercent: 11.5
+      },
+      {
+        testName: "PTH",
+        value: 185,
+        unit: "pg/mL",
+        normalRange: "15-65",
+        status: "abnormal",
+        previousValue: 165,
+        trend: "up",
+        changePercent: 12.1
+      }
+    ],
+    aiInsights: "Elevated phosphorus and PTH levels indicating secondary hyperparathyroidism. Consider adjusting phosphate binders and vitamin D therapy.",
+    recommendations: [
+      "Increase phosphate binder dose",
+      "Dietary phosphorus restriction reinforcement",
+      "Recheck PTH in 4 weeks"
+    ]
+  },
+  {
+    id: 3,
+    patientId: 3,
+    patientName: "Robert Davis",
+    mrn: "MRN-2024-003",
+    reportDate: "2024-11-20T11:00:00",
+    status: "needs_review",
+    severity: "abnormal",
+    criticalValues: 0,
+    abnormalValues: 3,
+    normalValues: 10,
+    labSource: "Quest Diagnostics",
+    values: [
+      {
+        testName: "Potassium",
+        value: 5.3,
+        unit: "mEq/L",
+        normalRange: "3.5-5.0",
+        status: "abnormal",
+        previousValue: 4.9,
+        trend: "up",
+        changePercent: 8.2
+      },
+      {
+        testName: "eGFR",
+        value: 24,
+        unit: "mL/min/1.73m²",
+        normalRange: ">60",
+        status: "abnormal",
+        previousValue: 28,
+        trend: "down",
+        changePercent: -14.3
+      },
+      {
+        testName: "Phosphorus",
+        value: 5.2,
+        unit: "mg/dL",
+        normalRange: "2.5-4.5",
+        status: "abnormal",
+        previousValue: 4.8,
+        trend: "up",
+        changePercent: 8.3
+      }
+    ],
+    aiInsights: "Moderate CKD progression with declining eGFR (24 mL/min) and elevated potassium (5.3 mEq/L). Close monitoring recommended to prevent further deterioration.",
+    recommendations: [
+      "Physician notification recommended",
+      "Dietary potassium restriction counseling",
+      "Consider adjusting medications",
+      "Follow-up labs in 2 weeks"
     ]
   }
 ];
@@ -231,7 +491,7 @@ export const notifications = [
   },
   {
     id: 2,
-    patientName: "Robert Johnson",
+    patientName: "Robert Davis",
     mrn: "MRN-2024-003",
     reportId: 3,
     type: "critical",
@@ -279,6 +539,13 @@ export const physicians = [
       critical: ["SMS", "Email", "Phone"],
       abnormal: ["Email"],
       normal: []
+    },
+    notificationRules: {
+      immediateNotification: true,
+      batchNotifications: true,
+      trendBasedAlerts: true,
+      criticalValueCount: "1",
+      responseTimeout: "15"
     }
   },
   {
@@ -291,6 +558,13 @@ export const physicians = [
       critical: ["SMS", "Email"],
       abnormal: ["Email"],
       normal: []
+    },
+    notificationRules: {
+      immediateNotification: true,
+      batchNotifications: true,
+      trendBasedAlerts: false,
+      criticalValueCount: "2",
+      responseTimeout: "30"
     }
   },
   {
@@ -303,6 +577,13 @@ export const physicians = [
       critical: ["SMS", "Email", "Phone"],
       abnormal: ["SMS", "Email"],
       normal: ["Email"]
+    },
+    notificationRules: {
+      immediateNotification: true,
+      batchNotifications: false,
+      trendBasedAlerts: true,
+      criticalValueCount: "1",
+      responseTimeout: "15"
     }
   }
 ];

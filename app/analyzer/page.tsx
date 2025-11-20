@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import {
   CloudArrowUpIcon,
   DocumentTextIcon,
-  PaperAirplaneIcon,
   ClockIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
@@ -18,12 +17,11 @@ export default function AnalyzerPage() {
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
-    { name: 'Fax Received', description: 'Lab report received via fax' },
     { name: 'Text Extraction', description: 'Extracting text from PDF' },
     { name: 'Data Parsing', description: 'Identifying patient info and lab values' },
     { name: 'Threshold Comparison', description: 'Comparing against medical standards' },
     { name: 'AI Analysis', description: 'Applying clinical reasoning' },
-    { name: 'Notification', description: 'Sending alerts to physicians' },
+    { name: 'Report Generation', description: 'Creating detailed analysis report' },
   ];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,103 +30,35 @@ export default function AnalyzerPage() {
     }
   };
 
-  const simulateFaxIntake = async () => {
-    setShowProgress(true);
-    setIsAnalyzing(true);
-    setCurrentStep(0);
-
-    // Simulate each step of the process
-    for (let i = 0; i < steps.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setCurrentStep(i + 1);
-    }
-
-    // Wait a moment then redirect to review page
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    router.push('/review?reportId=1&justAnalyzed=true');
-  };
-
   const analyzeFile = async () => {
     if (!selectedFile) return;
 
     setShowProgress(true);
     setIsAnalyzing(true);
-    setCurrentStep(1); // Skip fax received step for file upload
+    setCurrentStep(0);
 
-    // Simulate analysis steps (skip first step for file upload)
-    for (let i = 1; i < steps.length; i++) {
+    // Simulate analysis steps
+    for (let i = 0; i < steps.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 1500));
       setCurrentStep(i + 1);
     }
 
     await new Promise(resolve => setTimeout(resolve, 1000));
-    router.push('/review?reportId=1&justAnalyzed=true');
+    router.push('/reports/1');
   };
 
   return (
-    <div className="p-8">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Lab Report Analyzer</h1>
-        <p className="mt-2 text-gray-600">Upload a report or simulate end-to-end fax intake workflow</p>
+      <div>
+        <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">Lab Report Analyzer</h1>
+        {/* <p className="mt-2 text-[var(--text-secondary)]">Upload a lab report for AI-powered analysis</p> */}
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Fax Intake Simulation */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
-          <div className="text-center">
-            <div className="mx-auto h-20 w-20 bg-blue-100 rounded-full flex items-center justify-center mb-6">
-              <PaperAirplaneIcon className="h-10 w-10 text-blue-600" />
-            </div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-3">Fax Intake Simulation</h2>
-            <p className="text-gray-600 mb-8">
-              Simulate the complete end-to-end workflow from fax receipt through automated physician notification
-            </p>
-
-            <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
-              <h3 className="font-semibold text-gray-900 mb-3">What happens:</h3>
-              <ul className="space-y-2 text-sm text-gray-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Fax is received from lab (Quest Diagnostics)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>AI extracts and analyzes lab values automatically</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Critical values flagged with clinical insights</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Physician notified immediately via SMS/Email</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircleIcon className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <span>Staff reviews and approves notification</span>
-                </li>
-              </ul>
-            </div>
-
-            <button
-              onClick={simulateFaxIntake}
-              disabled={isAnalyzing}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-[#5F4AE8] hover:bg-[#4E3BC7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <PaperAirplaneIcon className="h-5 w-5" />
-              {isAnalyzing ? 'Simulating...' : 'Simulate Fax Intake'}
-            </button>
-
-            <p className="mt-4 text-xs text-gray-500">
-              Uses dummy data for patient: John Smith (MRN-2024-001)
-            </p>
-          </div>
-        </div>
-
+      <div>
         {/* File Upload */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           <div className="text-center">
             <div className="mx-auto h-20 w-20 bg-purple-100 rounded-full flex items-center justify-center mb-6">
               <CloudArrowUpIcon className="h-10 w-10 text-purple-600" />
@@ -139,7 +69,7 @@ export default function AnalyzerPage() {
             </p>
 
             {/* Dropzone */}
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 mb-6 hover:border-[#5F4AE8] transition-colors">
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 mb-6 hover:border-[#5F4AE8] transition-colors">
               <input
                 type="file"
                 id="fileInput"
@@ -148,8 +78,8 @@ export default function AnalyzerPage() {
                 className="hidden"
               />
               <label htmlFor="fileInput" className="cursor-pointer">
-                <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                <p className="text-sm text-gray-600 mb-2">
+                <DocumentTextIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                <p className="text-sm text-gray-600 mb-2 font-medium">
                   {selectedFile ? selectedFile.name : 'Click to browse or drag and drop'}
                 </p>
                 <p className="text-xs text-gray-500">
@@ -159,7 +89,7 @@ export default function AnalyzerPage() {
             </div>
 
             {selectedFile && (
-              <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
+              <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left border border-gray-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <DocumentTextIcon className="h-8 w-8 text-gray-400" />
@@ -172,7 +102,7 @@ export default function AnalyzerPage() {
                   </div>
                   <button
                     onClick={() => setSelectedFile(null)}
-                    className="text-sm text-red-600 hover:text-red-700"
+                    className="text-sm text-red-600 hover:text-red-700 font-medium"
                   >
                     Remove
                   </button>
@@ -180,14 +110,16 @@ export default function AnalyzerPage() {
               </div>
             )}
 
-            <button
-              onClick={analyzeFile}
-              disabled={!selectedFile || isAnalyzing}
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-purple-600 hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <CloudArrowUpIcon className="h-5 w-5" />
-              {isAnalyzing ? 'Analyzing...' : 'Upload & Analyze'}
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={analyzeFile}
+                disabled={!selectedFile || isAnalyzing}
+                className="inline-flex items-center gap-2 px-6 py-3 text-base font-medium rounded-lg text-white bg-[#5F4AE8] hover:bg-[#4E3BC7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
+              >
+                <CloudArrowUpIcon className="h-5 w-5" />
+                {isAnalyzing ? 'Analyzing...' : 'Upload & Analyze'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
