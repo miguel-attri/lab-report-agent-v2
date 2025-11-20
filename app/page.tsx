@@ -18,6 +18,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [showProgress, setShowProgress] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState(0);
   const [criticalDetected, setCriticalDetected] = useState(false);
   const [newReport, setNewReport] = useState<any>(null);
   const [showToast, setShowToast] = useState(false);
@@ -25,7 +26,7 @@ export default function Dashboard() {
   const [selectedSeverity, setSelectedSeverity] = useState<string | null>(null);
 
   const allSteps = [
-    { name: 'Fax Received', description: 'Lab report received from Quest Diagnostics' },
+    { name: 'Fax Ingestion', description: 'Loading Lab report from Quest Diagnostics' },
     { name: 'Information Extraction', description: 'Identifying patient information' },
     { name: 'AI Analysis', description: 'Comparing against thresholds and patient history for Sarah Martinez' },
     { name: 'Physician Notification', description: 'Automatic SMS/Email sent to Dr. Michael Chen' },
@@ -54,31 +55,42 @@ export default function Dashboard() {
 
   const simulateFaxIntake = async () => {
     setShowProgress(true);
-    setCurrentStep(0);
+    setCurrentStep(1); // Show first step immediately
+    setCompletedSteps(0); // Start at 0%
     setCriticalDetected(false);
     setNewReport(null);
 
-    // Step 1: Fax Received
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setCurrentStep(1);
-
-    // Step 2: Information Extraction
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Step 1: Fax Received - complete it
+    await new Promise(resolve => setTimeout(resolve, 2500));
     setCurrentStep(2);
+    setCompletedSteps(1); // 25%
 
-    // Step 3: AI Analysis
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    // Step 2: Information Extraction - complete it
+    await new Promise(resolve => setTimeout(resolve, 4500));
     setCurrentStep(3);
+    setCompletedSteps(2); // 50%
 
-    // Trigger critical alert after AI Analysis
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Step 3: AI Analysis - complete it (twice as long)
+    await new Promise(resolve => setTimeout(resolve, 7000));
+    setCompletedSteps(3); // 75% - step 3 done immediately
+
+    // Mark step 3 as complete (turn it green)
+    setCurrentStep(4);
+    await new Promise(resolve => setTimeout(resolve, 100));
     setCriticalDetected(true);
 
-    // Wait before showing physician notification step
+    // Wait before showing physician notification step 4
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Step 4: Physician Notification
-    setCurrentStep(4);
+    // Show step 4
+    setCurrentStep(5);
+
+    // Complete step 4
+    await new Promise(resolve => setTimeout(resolve, 2500));
+    setCompletedSteps(4); // 100%
+
+    // Wait a bit at 100% before closing
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Create new reviewed report
     const newReviewedReport = {
@@ -173,7 +185,7 @@ export default function Dashboard() {
       {/* Pending Reports */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">Pending</h2>
+          <h2 className="text-xl font-bold text-[var(--text-primary)]">Pending Review</h2>
           <span className="text-sm text-gray-500">{pendingReports.length} reports</span>
         </div>
 
@@ -250,7 +262,7 @@ export default function Dashboard() {
       {/* Reviewed Reports */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-[var(--text-primary)]">Reviewed</h2>
+          <h2 className="text-xl font-bold text-[var(--text-primary)]">Actioned</h2>
           <span className="text-sm text-gray-500">{actionedReports.length} reports</span>
         </div>
 
@@ -360,37 +372,43 @@ export default function Dashboard() {
 
             {/* Progress Steps */}
             <div className="space-y-4">
-              {allSteps.slice(0, currentStep).map((step, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
-                    index < currentStep - 1
-                      ? 'bg-green-50 border border-green-200'
-                      : 'bg-blue-50 border border-blue-200'
-                  }`}
-                >
-                  <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${
-                    index < currentStep - 1
-                      ? 'bg-green-500'
-                      : 'bg-blue-500 animate-pulse'
-                  }`}>
-                    {index < currentStep - 1 ? (
-                      <CheckCircleIcon className="h-5 w-5 text-white" />
-                    ) : (
-                      <span className="text-white text-sm font-medium">{index + 1}</span>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900">
-                      {step.name}
-                    </p>
-                    <p className="text-sm text-gray-600">{step.description}</p>
-                  </div>
-                </div>
-              ))}
+              {/* Steps 1-3 (before critical alert) */}
+              {allSteps.slice(0, 3).map((step, index) => {
+                const stepNumber = index + 1;
+                const isCompleted = stepNumber < currentStep;
+                const isActive = stepNumber === currentStep;
+                const shouldShow = stepNumber <= currentStep;
 
-              {/* Critical Alert Card */}
-              {criticalDetected && (
+                if (!shouldShow) return null;
+
+                return (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-4 p-4 rounded-lg transition-all ${
+                      isCompleted
+                        ? 'bg-green-50 border border-green-200'
+                        : 'bg-blue-50 border border-blue-200'
+                    }`}
+                  >
+                    <div className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${
+                      isCompleted ? 'bg-green-500' : 'bg-blue-500'
+                    }`}>
+                      {isCompleted ? (
+                        <CheckCircleIcon className="h-5 w-5 text-white" />
+                      ) : (
+                        <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{step.name}</p>
+                      <p className="text-sm text-gray-600">{step.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Critical Alert Card - only show after step 3 is complete */}
+              {criticalDetected && currentStep > 3 && (
                 <div className="bg-rose-50 border-2 border-rose-300 rounded-xl p-5 animate-in fade-in">
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0">
@@ -405,22 +423,32 @@ export default function Dashboard() {
                   </div>
                 </div>
               )}
+
+              {/* Step 4 (Physician Notification - after critical alert) */}
+              {currentStep >= 5 && (
+                <div className="flex items-center gap-4 p-4 rounded-lg transition-all bg-blue-50 border border-blue-200">
+                  <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center bg-blue-500">
+                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{allSteps[3].name}</p>
+                    <p className="text-sm text-gray-600">{allSteps[3].description}</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Progress Bar */}
             <div className="mt-8">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-end mb-2">
                 <span className="text-sm font-medium text-gray-700">
-                  Step {currentStep} of {allSteps.length}
-                </span>
-                <span className="text-sm font-medium text-gray-700">
-                  {Math.round((currentStep / allSteps.length) * 100)}%
+                  {Math.round((completedSteps / allSteps.length) * 100)}%
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-500"
-                  style={{ width: `${(currentStep / allSteps.length) * 100}%` }}
+                  style={{ width: `${(completedSteps / allSteps.length) * 100}%` }}
                 />
               </div>
             </div>
