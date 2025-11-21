@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
   BellIcon,
@@ -16,14 +16,45 @@ import { labReports } from '@/lib/data/dummy-data';
 
 export default function Dashboard() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showProgress, setShowProgress] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState(0);
   const [criticalDetected, setCriticalDetected] = useState(false);
   const [newReport, setNewReport] = useState<any>(null);
   const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState({ title: '', message: '' });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSeverity, setSelectedSeverity] = useState<string | null>(null);
+  const [approvedReport, setApprovedReport] = useState<any>(null);
+
+  // Check for approval redirect
+  useEffect(() => {
+    if (searchParams.get('approved') === 'true') {
+      const patient = searchParams.get('patient');
+      const physician = searchParams.get('physician');
+      const reportId = searchParams.get('reportId');
+
+      // Find the report and mark it as reviewed
+      const report = labReports.find(r => r.id === parseInt(reportId || '0'));
+      if (report) {
+        const approvedReportData = {
+          ...report,
+          status: 'reviewed'
+        };
+        setApprovedReport(approvedReportData);
+      }
+
+      setToastMessage({
+        title: 'Report Approved Successfully',
+        message: `${patient}'s lab results have been approved and ${physician} has been notified.`
+      });
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 5000);
+      // Clean up URL
+      router.replace('/');
+    }
+  }, [searchParams, router]);
 
   const allSteps = [
     { name: 'Fax Ingestion', description: 'Loading Lab report from Quest Diagnostics' },
@@ -45,8 +76,15 @@ export default function Dashboard() {
     });
   };
 
-  const allPendingReports = labReports.filter(r => r.status === 'needs_review');
-  const allActionedReports = newReport
+  // Filter out approved report from pending, exclude it from actioned if it's there
+  const allPendingReports = labReports.filter(r =>
+    r.status === 'needs_review' && (!approvedReport || r.id !== approvedReport.id)
+  );
+
+  // Add approved report to top of actioned list, or newReport from fax intake
+  const allActionedReports = approvedReport
+    ? [approvedReport, ...labReports.filter(r => r.status === 'reviewed' && r.id !== approvedReport.id)]
+    : newReport
     ? [newReport, ...labReports.filter(r => r.status === 'reviewed')]
     : labReports.filter(r => r.status === 'reviewed');
 
@@ -92,6 +130,8 @@ export default function Dashboard() {
     // Wait a bit at 100% before closing
     await new Promise(resolve => setTimeout(resolve, 1000));
 
+    setShowProgress(false);
+
     // Create new reviewed report
     const newReviewedReport = {
       id: 999,
@@ -110,9 +150,11 @@ export default function Dashboard() {
 
     setNewReport(newReviewedReport);
 
-    // Wait a moment then close modal and show toast
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setShowProgress(false);
+    // Show toast
+    setToastMessage({
+      title: 'Report Processed Successfully',
+      message: `Sarah Martinez's critical lab results have been analyzed and Dr. Michael Chen has been notified via SMS and Email.`
+    });
     setShowToast(true);
 
     // Auto-hide toast after 5 seconds
@@ -464,9 +506,9 @@ export default function Dashboard() {
               <CheckCircleIcon className="h-6 w-6" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold mb-1">Report Processed Successfully</h4>
+              <h4 className="font-semibold mb-1">{toastMessage.title}</h4>
               <p className="text-sm text-emerald-100">
-                Sarah Martinez's critical lab results have been analyzed and Dr. Sarah Johnson has been notified via SMS and Email.
+                {toastMessage.message}
               </p>
             </div>
             <button

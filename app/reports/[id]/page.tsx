@@ -10,6 +10,7 @@ import {
   ArrowTrendingDownIcon,
   MinusIcon,
   PaperAirplaneIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 import { labReports, physicians } from '@/lib/data/dummy-data';
 
@@ -42,8 +43,11 @@ export default function ReportDetailPage() {
   const handleApproveAndNotify = () => {
     console.log('Approved and notifying physician:', selectedPhysician);
     setShowNotificationModal(false);
-    // In real app, would update status and send notification
-    router.push('/');
+    // Get physician name for toast
+    const physician = physicians.find(p => p.id === selectedPhysician);
+    const physicianName = physician?.name || 'physician';
+    // Redirect to dashboard with toast notification via URL params
+    router.push(`/?approved=true&reportId=${report.id}&patient=${encodeURIComponent(report.patientName)}&physician=${encodeURIComponent(physicianName)}`);
   };
 
   return (
@@ -64,13 +68,22 @@ export default function ReportDetailPage() {
           <p className="mt-2 text-[var(--text-secondary)]">MRN: {report.mrn} • {new Date(report.reportDate).toLocaleString()}</p>
         </div>
         {report.status === 'needs_review' ? (
-          <button
-            onClick={() => setShowNotificationModal(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#5F4AE8] text-white rounded-lg hover:bg-[#4E3BC7] transition-colors shadow-sm"
-          >
-            <CheckCircleIcon className="h-5 w-5" />
-            Approve & Notify Physician
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => alert('Feedback for AI feature coming soon!')}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <ChatBubbleLeftRightIcon className="h-5 w-5" />
+              Feedback for AI
+            </button>
+            <button
+              onClick={() => setShowNotificationModal(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#5F4AE8] text-white rounded-lg hover:bg-[#4E3BC7] transition-colors shadow-sm"
+            >
+              <CheckCircleIcon className="h-5 w-5" />
+              Approve & Notify Physician
+            </button>
+          </div>
         ) : (
           (() => {
             // Map patient to physician based on patient data
